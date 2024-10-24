@@ -87,6 +87,10 @@ class Tls(object):
                 if log_enabled(ERROR):
                     log(ERROR, 'cannot use custom_ssl_context, SSLContext not available')
                 raise LDAPSSLNotSupportedError('cannot use custom_ssl_context, SSLContext not available')
+            if not is instance(custom_ssl_context, ssl.SSLContext):
+                if log_enabled(ERROR):
+                    log(ERROR, 'custom_ssl_context must be an ssl.SSLContext object')
+                raise LDAPSSLNotSupportedError('custom_ssl_context must be an ssl.SSLContext object')
             if not (local_private_key_file is None and
                  local_certificate_file is None and
                  validate == ssl.CERT_NONE and
