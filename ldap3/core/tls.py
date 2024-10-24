@@ -1,3 +1,6 @@
+"""
+"""
+
 # Created on 2013.08.05
 #
 # Author: Giovanni Cannata
@@ -192,7 +195,16 @@ class Tls(object):
         """
         Adds TLS to the connection socket
         """
-        if use_ssl_context:
+        if self.custom_ssl_context is not None:
+            ssl_context = self.custom_ssl_context
+            if self.sni:
+                wrapped_socket = ssl_context.wrap_socket(connection.socket, server_side=False, do_handshake_on_connect=do_handshake, server_hostname=self.sni)
+            else:
+                wrapped_socket = ssl_context.wrap_socket(connection.socket, server_side=False, do_handshake_on_connect=do_handshake)
+            self.validate = ssl_context.
+            if log_enabled(NETWORK):
+                log(NETWORK, 'socket wrapped with SSL using custom SSLContext for <%s>', connection)            
+        elif use_ssl_context:
             if self.version is None:  # uses the default ssl context for reasonable security
                 ssl_context = create_default_context(purpose=Purpose.SERVER_AUTH,
                                                      cafile=self.ca_certs_file,
