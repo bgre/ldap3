@@ -201,7 +201,7 @@ class Tls(object):
                 wrapped_socket = ssl_context.wrap_socket(connection.socket, server_side=False, do_handshake_on_connect=do_handshake, server_hostname=self.sni)
             else:
                 wrapped_socket = ssl_context.wrap_socket(connection.socket, server_side=False, do_handshake_on_connect=do_handshake)
-            self.validate = ssl_context.
+            self.validate = ssl_context.verify_mode
             if log_enabled(NETWORK):
                 log(NETWORK, 'socket wrapped with SSL using custom SSLContext for <%s>', connection)            
         elif use_ssl_context:
