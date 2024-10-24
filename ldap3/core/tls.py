@@ -1,6 +1,3 @@
-"""
-"""
-
 # Created on 2013.08.05
 #
 # Author: Giovanni Cannata
@@ -80,7 +77,29 @@ class Tls(object):
                  local_private_key_password=None,
                  ciphers=None,
                  sni=None,
-                 peer_certificate=None):
+                 peer_certificate=None,
+                 custom_ssl_context=None):
+        if custom_ssl_context is not None:
+            if not use_ssl_context:
+                if log_enabled(ERROR):
+                    log(ERROR, 'cannot use custom_ssl_context, SSLContext not available')
+                raise LDAPSSLNotSupportedError('cannot use custom_ssl_context, SSLContext not available')
+            if not (local_private_key_file is None and
+                 local_certificate_file is None and
+                 validate == ssl.CERT_NONE and
+                 version is None and
+                 ssl_options is None and
+                 ca_certs_file is None and
+                 valid_names is None and
+                 ca_certs_path is None and
+                 ca_certs_data is None and
+                 local_private_key_password is None and
+                 ciphers is None and
+                 peer_certificate is None):
+                 if log_enabled(ERROR):
+                     log(ERROR, 'cannot specify other parameters when using custom_ssl_context')
+                 raise LDAPSSLConfigurationError('cannot specify other parameters when using custom_ssl_context')
+        self.custom_ssl_context = custom_ssl_context     
         if ssl_options is None:
             ssl_options = []
         self.ssl_options = ssl_options
