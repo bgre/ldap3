@@ -97,15 +97,14 @@ class Tls(object):
                  version is None and
                  ssl_options is None and
                  ca_certs_file is None and
-                 valid_names is None and
                  ca_certs_path is None and
                  ca_certs_data is None and
                  local_private_key_password is None and
                  ciphers is None and
                  peer_certificate is None):
                  if log_enabled(ERROR):
-                     log(ERROR, 'cannot specify other parameters when using custom_ssl_context')
-                 raise LDAPSSLConfigurationError('cannot specify other parameters when using custom_ssl_context')
+                     log(ERROR, 'cannot specify other parameters when using custom_ssl_context (except for sni and valid_names)')
+                 raise LDAPSSLConfigurationError('cannot specify other parameters when using custom_ssl_context (except for sni and valid_names)')
         self.custom_ssl_context = custom_ssl_context     
         if ssl_options is None:
             ssl_options = []
@@ -178,7 +177,8 @@ class Tls(object):
             'verify mode: ' + str(self.validate),
             'valid names: ' + str(self.valid_names),
             'ciphers: ' + str(self.ciphers),
-            'sni: ' + str(self.sni)
+            'sni: ' + str(self.sni),
+            'custom_ssl_context: ' + ('present ' if self.custom_ssl_context else 'not present')
         ]
         return ' - '.join(s)
 
@@ -192,6 +192,7 @@ class Tls(object):
         r += '' if self.ca_certs_data is None else ', ca_certs_data={0.ca_certs_data!r}'.format(self)
         r += '' if self.ciphers is None else ', ciphers={0.ciphers!r}'.format(self)
         r += '' if self.sni is None else ', sni={0.sni!r}'.format(self)
+        r += '' if self.custom_ssl_context is None else ', custom_ssl_context={0.custom_ssl_context!r}'.format(self)
         r = 'Tls(' + r[2:] + ')'
         return r
 
